@@ -1,0 +1,145 @@
+INFO: Initializing raylib 4.5
+INFO: Supported raylib modules:
+INFO:     > rcore:..... loaded (mandatory)
+INFO:     > rlgl:...... loaded (mandatory)
+INFO:     > rshapes:... loaded (optional)
+INFO:     > rtextures:. loaded (optional)
+INFO:     > rtext:..... loaded (optional)
+INFO:     > rmodels:... loaded (optional)
+INFO:     > raudio:.... loaded (optional)
+INFO: DISPLAY: Trying to enable MSAA x4
+INFO: DISPLAY: Device initialized successfully
+INFO:     > Display size: 1920 x 1080
+INFO:     > Screen size:  1280 x 960
+INFO:     > Render size:  1280 x 960
+INFO:     > Viewport offsets: 0, 0
+INFO: GLAD: OpenGL extensions loaded successfully
+INFO: GL: Supported extensions count: 391
+INFO: GL: OpenGL device information:
+INFO:     > Vendor:   NVIDIA Corporation
+INFO:     > Renderer: NVIDIA GeForce GTX 1060 3GB/PCIe/SSE2
+INFO:     > Version:  3.3.0 NVIDIA 546.17
+INFO:     > GLSL:     3.30 NVIDIA via Cg compiler
+INFO: GL: VAO extension detected, VAO functions loaded successfully
+INFO: GL: NPOT textures extension detected, full NPOT textures supported
+INFO: GL: DXT compressed textures supported
+INFO: GL: ETC2/EAC compressed textures supported
+INFO: TEXTURE: [ID 1] Texture loaded successfully (1x1 | R8G8B8A8 | 1 mipmaps)
+INFO: TEXTURE: [ID 1] Default texture loaded successfully
+INFO: SHADER: [ID 1] Vertex shader compiled successfully
+INFO: SHADER: [ID 2] Fragment shader compiled successfully
+INFO: SHADER: [ID 3] Program shader loaded successfully
+INFO: SHADER: [ID 3] Default shader loaded successfully
+INFO: RLGL: Render batch vertex buffers loaded successfully in RAM (CPU)
+INFO: RLGL: Render batch vertex buffers loaded successfully in VRAM (GPU)
+INFO: RLGL: Default OpenGL state initialized successfully
+INFO: TEXTURE: [ID 2] Texture loaded successfully (128x128 | GRAY_ALPHA | 1 mipmaps)
+INFO: FONT: Default font loaded successfully (224 glyphs)
+INFO: FILEIO: [c:\dev\c\games\space\build\/assets/inconsolata.ttf] File loaded successfully
+INFO: TEXTURE: [ID 3] Texture loaded successfully (512x512 | GRAY_ALPHA | 1 mipmaps)
+INFO: FONT: Data loaded successfully (24 pixel size | 95 glyphs)
+[0m[INFO]:[0m Logger initialized successfully on file "log.txt"
+INFO: TIMER: Target time per frame: 6.944 milliseconds
+INFO: AUDIO: Device initialized successfully
+INFO:     > Backend:       miniaudio / WASAPI
+INFO:     > Format:        32-bit IEEE Floating Point -> 32-bit IEEE Floating Point
+INFO:     > Channels:      2 -> 2
+INFO:     > Sample rate:   48000 -> 48000
+INFO:     > Periods size:  1440
+INFO: FILEIO: [c:\dev\c\games\space\build\/assets/graphics.png] File loaded successfully
+INFO: IMAGE: Data loaded successfully (111x128 | R8G8B8A8 | 1 mipmaps)
+INFO: TEXTURE: [ID 4] Texture loaded successfully (111x128 | R8G8B8A8 | 1 mipmaps)
+INFO: FILEIO: [c:\dev\c\games\space\build\/assets/nsstudios__laser3.wav] File loaded successfully
+INFO: WAVE: Data loaded successfully (44100 Hz, 16 bit, 2 channels)
+INFO: FILEIO: [c:\dev\c\games\space\build\/assets/explosion.wav] File loaded successfully
+INFO: WAVE: Data loaded successfully (44100 Hz, 16 bit, 2 channels)
+INFO: STREAM: Initialized successfully (48000 Hz, 32 bit, Stereo)
+INFO: FILEIO: [c:\dev\c\games\space\build\/assets/background2.wav] Music file loaded successfully
+INFO:     > Sample rate:   48000 Hz
+INFO:     > Sample size:   32 bits
+INFO:     > Channels:      2 (Stereo)
+INFO:     > Total frames:  120094
+[0m[INFO]:[0m begin_y = 115
+[0m[INFO]:[0m initting alien(0, 0) at {300.0 115.0 32.0 32.0}
+[0m[INFO]:[0m initting alien(0, 1) at {366.0 115.0 32.0 32.0}
+[0m[INFO]:[0m initting alien(0, 2) at {432.0 115.0 32.0 32.0}
+[0m[INFO]:[0m initting alien(0, 3) at {498.0 115.0 32.0 32.0}
+[0m[INFO]:[0m initting alien(0, 4) at {564.0 115.0 32.0 32.0}
+[0m[INFO]:[0m initting alien(0, 5) at {630.0 115.0 32.0 32.0}
+[0m[INFO]:[0m initting alien(0, 6) at {696.0 115.0 32.0 32.0}
+[0m[INFO]:[0m initting alien(0, 7) at {762.0 115.0 32.0 32.0}
+[0m[INFO]:[0m initting alien(0, 8) at {828.0 115.0 32.0 32.0}
+[0m[INFO]:[0m initting alien(0, 9) at {894.0 115.0 32.0 32.0}
+[0m[INFO]:[0m initting alien(0, 10) at {960.0 115.0 32.0 32.0}
+[0m[INFO]:[0m initting 1 outer_rectangle with: 300.0 115.0 692.0 32.0
+[0m[INFO]:[0m begin_y = 160
+[0m[INFO]:[0m initting alien(1, 0) at {294.0 160.0 44.0 32.0}
+[0m[INFO]:[0m initting alien(1, 1) at {360.0 160.0 44.0 32.0}
+[0m[INFO]:[0m initting alien(1, 2) at {426.0 160.0 44.0 32.0}
+[0m[INFO]:[0m initting alien(1, 3) at {492.0 160.0 44.0 32.0}
+[0m[INFO]:[0m initting alien(1, 4) at {558.0 160.0 44.0 32.0}
+[0m[INFO]:[0m initting alien(1, 5) at {624.0 160.0 44.0 32.0}
+[0m[INFO]:[0m initting alien(1, 6) at {690.0 160.0 44.0 32.0}
+[0m[INFO]:[0m initting alien(1, 7) at {756.0 160.0 44.0 32.0}
+[0m[INFO]:[0m initting alien(1, 8) at {822.0 160.0 44.0 32.0}
+[0m[INFO]:[0m initting alien(1, 9) at {888.0 160.0 44.0 32.0}
+[0m[INFO]:[0m initting alien(1, 10) at {954.0 160.0 44.0 32.0}
+[0m[INFO]:[0m initting 2 outer_rectangle with: 294.0 160.0 704.0 32.0
+[0m[INFO]:[0m begin_y = 205
+[0m[INFO]:[0m initting alien(2, 0) at {300.0 205.0 32.0 32.0}
+[0m[INFO]:[0m initting alien(2, 1) at {366.0 205.0 32.0 32.0}
+[0m[INFO]:[0m initting alien(2, 2) at {432.0 205.0 32.0 32.0}
+[0m[INFO]:[0m initting alien(2, 3) at {498.0 205.0 32.0 32.0}
+[0m[INFO]:[0m initting alien(2, 4) at {564.0 205.0 32.0 32.0}
+[0m[INFO]:[0m initting alien(2, 5) at {630.0 205.0 32.0 32.0}
+[0m[INFO]:[0m initting alien(2, 6) at {696.0 205.0 32.0 32.0}
+[0m[INFO]:[0m initting alien(2, 7) at {762.0 205.0 32.0 32.0}
+[0m[INFO]:[0m initting alien(2, 8) at {828.0 205.0 32.0 32.0}
+[0m[INFO]:[0m initting alien(2, 9) at {894.0 205.0 32.0 32.0}
+[0m[INFO]:[0m initting alien(2, 10) at {960.0 205.0 32.0 32.0}
+[0m[INFO]:[0m initting 3 outer_rectangle with: 300.0 205.0 692.0 32.0
+[0m[INFO]:[0m begin_y = 250
+[0m[INFO]:[0m initting alien(3, 0) at {284.0 250.0 64.0 28.0}
+[0m[INFO]:[0m initting alien(3, 1) at {350.0 250.0 64.0 28.0}
+[0m[INFO]:[0m initting alien(3, 2) at {416.0 250.0 64.0 28.0}
+[0m[INFO]:[0m initting alien(3, 3) at {482.0 250.0 64.0 28.0}
+[0m[INFO]:[0m initting alien(3, 4) at {548.0 250.0 64.0 28.0}
+[0m[INFO]:[0m initting alien(3, 5) at {614.0 250.0 64.0 28.0}
+[0m[INFO]:[0m initting alien(3, 6) at {680.0 250.0 64.0 28.0}
+[0m[INFO]:[0m initting alien(3, 7) at {746.0 250.0 64.0 28.0}
+[0m[INFO]:[0m initting alien(3, 8) at {812.0 250.0 64.0 28.0}
+[0m[INFO]:[0m initting alien(3, 9) at {878.0 250.0 64.0 28.0}
+[0m[INFO]:[0m initting alien(3, 10) at {944.0 250.0 64.0 28.0}
+[0m[INFO]:[0m initting 4 outer_rectangle with: 284.0 250.0 724.0 28.0
+[0m[INFO]:[0m begin_y = 295
+[0m[INFO]:[0m initting alien(4, 0) at {300.0 295.0 32.0 32.0}
+[0m[INFO]:[0m initting alien(4, 1) at {366.0 295.0 32.0 32.0}
+[0m[INFO]:[0m initting alien(4, 2) at {432.0 295.0 32.0 32.0}
+[0m[INFO]:[0m initting alien(4, 3) at {498.0 295.0 32.0 32.0}
+[0m[INFO]:[0m initting alien(4, 4) at {564.0 295.0 32.0 32.0}
+[0m[INFO]:[0m initting alien(4, 5) at {630.0 295.0 32.0 32.0}
+[0m[INFO]:[0m initting alien(4, 6) at {696.0 295.0 32.0 32.0}
+[0m[INFO]:[0m initting alien(4, 7) at {762.0 295.0 32.0 32.0}
+[0m[INFO]:[0m initting alien(4, 8) at {828.0 295.0 32.0 32.0}
+[0m[INFO]:[0m initting alien(4, 9) at {894.0 295.0 32.0 32.0}
+[0m[INFO]:[0m initting alien(4, 10) at {960.0 295.0 32.0 32.0}
+[0m[INFO]:[0m initting 5 outer_rectangle with: 300.0 295.0 692.0 32.0
+[0m[INFO]:[0m tick 1.003148
+[0m[INFO]:[0m shooting bullet 1
+[0m[INFO]:[0m shooting bullet 2
+[0m[INFO]:[0m shooting bullet 3
+[0m[INFO]:[0m shooting bullet 4
+[0m[INFO]:[0m tick 2.009869
+[0m[INFO]:[0m shooting bullet 5
+[0m[INFO]:[0m shooting bullet 6
+[0m[INFO]:[0m shooting bullet 7
+[0m[INFO]:[0m shooting bullet 8
+[0m[INFO]:[0m shooting bullet 9
+[0m[INFO]:[0m tick 3.016248
+[0m[INFO]:[0m shooting bullet 10
+[0m[INFO]:[0m shooting bullet 11
+INFO: TEXTURE: [ID 4] Unloaded texture data from VRAM (GPU)
+INFO: TEXTURE: [ID 2] Unloaded texture data from VRAM (GPU)
+INFO: SHADER: [ID 3] Default shader unloaded successfully
+INFO: TEXTURE: [ID 1] Default texture unloaded successfully
+INFO: Window closed successfully
