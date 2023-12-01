@@ -3,7 +3,7 @@ CLANG_WINDOWS_LIB_PATH = -Lc:/handmade/lib/
 CLANG_WINDOWS_LINK_FLAGS = -lraylib -lopengl32 -lshell32 -lmsvcrt -luser32 -lgdi32 -lwinmm
 
 all:
-	clang -MT -fsanitize=address -Wall --debug main.c Game.c Logger.c -o ../build/space.exe $(CLANG_INCLUDE_FLAGS) $(CLANG_WINDOWS_LIB_PATH) $(CLANG_WINDOWS_LINK_FLAGS)
+	clang -Wall --debug main.c Game.c Logger.c -o ../build/space.exe $(CLANG_INCLUDE_FLAGS) $(CLANG_WINDOWS_LIB_PATH) $(CLANG_WINDOWS_LINK_FLAGS)
 	
 
 o:

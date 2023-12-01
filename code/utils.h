@@ -51,3 +51,12 @@ inline void *AllocAndZero(size_t bytes)
   memset(result, 0, bytes);
   return result;
 }
+
+#define DEBUG_ASSERT(cond)                                                     \
+  if (!(cond))                                                                 \
+  {                                                                            \
+  }                                                                            \
+  else                                                                         \
+  {                                                                            \
+    __debugbreak();                                                            \
+  }

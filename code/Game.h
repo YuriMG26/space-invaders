@@ -5,7 +5,6 @@
 #include <raylib.h>
 #include <raymath.h>
 
-#include "ray_functions.h"
 typedef Rectangle rect;
 typedef Texture tex;
 
@@ -71,23 +70,40 @@ typedef struct
       rect bottom_center;
       rect bottom_right;
     };
-    rect rectangles[9];
+    rect rectangles[8];
   };
   rect pos;
+  bool active_rectangles[9];
 } Barrier;
 
 typedef struct
 {
   Sound laser;
   Sound explosion;
-  // Music background;
-  Music background_wave;
+  Music background;
 } GameSound;
+
+typedef struct
+{
+  bool left, right;
+  bool shoot;
+  bool gamepad_mode;
+} KeyInput;
+
+enum AnimationState
+{
+  ANIMATION_ZERO,
+  ANIMATION_ONE
+};
 
 typedef struct
 {
   Logger *logger;
   GameSound sound_assets;
+
+  f32 delta;
+
+  KeyInput input;
 
   u16 width, height;       // Window dimensions
   char title[64];          // Window title
@@ -97,6 +113,8 @@ typedef struct
   u16 aliens_alive_count;
 
   Barrier barriers[4];
+
+  u8 animation_state;
 
   b32 game_over;
   u32 score;
@@ -116,7 +134,8 @@ typedef struct
   Bullet bullets[MAX_BULLETS]; // Array of bullets
   u16 player_active_bullets;   // Number of active bullets
 
-  Bullet alien_bullets[16];
+#define MAX_ALIEN_BULLETS 3
+  Bullet alien_bullets[MAX_ALIEN_BULLETS];
   u16 alien_active_bullets;
   u16 alien_should_shoot_counter;
 
@@ -124,17 +143,16 @@ typedef struct
 
   b32 game_code_was_reloaded;
 
+  b32 paused;
   b32 should_reset_aliens;
   b32 debug_mode;
-  b32 debug_rectangles_mode;
+  b32 draw_hitboxes;
   b32 debug_draw_aliens;
   rect debug_rect;
   Font debug_font;
   i32 debug_font_size;
 
   rect debug_full_rectangle;
-
-  RayFunctions rl;
 } GameApp;
 
 #if 0
@@ -167,3 +185,8 @@ typedef GAME_DRAW_DEBUG_INFO(game_draw_debug_info_t);
 DLL_CODE GAME_DRAW_DEBUG_INFO(GameDrawDebugInfo);
 
 void Shoot(GameApp *game);
+
+#ifdef GAME_CODE
+internal void UpdateRowRectangle(GameApp *game, u8 row_num, rect *alien_row);
+internal void CheckIfBulletISOutOfBounds(GameApp *game, Bullet *bullet, u16 i);
+#endif

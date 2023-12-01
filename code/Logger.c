@@ -38,7 +38,7 @@ Logger *LoggerBegin(const char *filename, b32 write_to_file)
 
 void LoggerEnd(Logger *logger)
 {
-  if (logger->write_to_file)
+  if (logger->write_to_file && logger->handle != NULL)
   {
     fclose(logger->handle);
   }
