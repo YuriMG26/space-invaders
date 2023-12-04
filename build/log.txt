@@ -1,0 +1,145 @@
+[0m[INFO]:[0m Logger initialized successfully on file "log.txt"
+[0m[INFO]:[0m begin_y = 115
+[0m[INFO]:[0m initting alien(0, 0) at {300.0 115.0 32.0 32.0}
+[0m[INFO]:[0m initting alien(0, 1) at {366.0 115.0 32.0 32.0}
+[0m[INFO]:[0m initting alien(0, 2) at {432.0 115.0 32.0 32.0}
+[0m[INFO]:[0m initting alien(0, 3) at {498.0 115.0 32.0 32.0}
+[0m[INFO]:[0m initting alien(0, 4) at {564.0 115.0 32.0 32.0}
+[0m[INFO]:[0m initting alien(0, 5) at {630.0 115.0 32.0 32.0}
+[0m[INFO]:[0m initting alien(0, 6) at {696.0 115.0 32.0 32.0}
+[0m[INFO]:[0m initting alien(0, 7) at {762.0 115.0 32.0 32.0}
+[0m[INFO]:[0m initting alien(0, 8) at {828.0 115.0 32.0 32.0}
+[0m[INFO]:[0m initting alien(0, 9) at {894.0 115.0 32.0 32.0}
+[0m[INFO]:[0m initting alien(0, 10) at {960.0 115.0 32.0 32.0}
+[0m[INFO]:[0m initting 1 outer_rectangle with: 300.0 115.0 692.0 32.0
+[0m[INFO]:[0m begin_y = 160
+[0m[INFO]:[0m initting alien(1, 0) at {294.0 160.0 44.0 32.0}
+[0m[INFO]:[0m initting alien(1, 1) at {360.0 160.0 44.0 32.0}
+[0m[INFO]:[0m initting alien(1, 2) at {426.0 160.0 44.0 32.0}
+[0m[INFO]:[0m initting alien(1, 3) at {492.0 160.0 44.0 32.0}
+[0m[INFO]:[0m initting alien(1, 4) at {558.0 160.0 44.0 32.0}
+[0m[INFO]:[0m initting alien(1, 5) at {624.0 160.0 44.0 32.0}
+[0m[INFO]:[0m initting alien(1, 6) at {690.0 160.0 44.0 32.0}
+[0m[INFO]:[0m initting alien(1, 7) at {756.0 160.0 44.0 32.0}
+[0m[INFO]:[0m initting alien(1, 8) at {822.0 160.0 44.0 32.0}
+[0m[INFO]:[0m initting alien(1, 9) at {888.0 160.0 44.0 32.0}
+[0m[INFO]:[0m initting alien(1, 10) at {954.0 160.0 44.0 32.0}
+[0m[INFO]:[0m initting 2 outer_rectangle with: 294.0 160.0 704.0 32.0
+[0m[INFO]:[0m begin_y = 205
+[0m[INFO]:[0m initting alien(2, 0) at {300.0 205.0 32.0 32.0}
+[0m[INFO]:[0m initting alien(2, 1) at {366.0 205.0 32.0 32.0}
+[0m[INFO]:[0m initting alien(2, 2) at {432.0 205.0 32.0 32.0}
+[0m[INFO]:[0m initting alien(2, 3) at {498.0 205.0 32.0 32.0}
+[0m[INFO]:[0m initting alien(2, 4) at {564.0 205.0 32.0 32.0}
+[0m[INFO]:[0m initting alien(2, 5) at {630.0 205.0 32.0 32.0}
+[0m[INFO]:[0m initting alien(2, 6) at {696.0 205.0 32.0 32.0}
+[0m[INFO]:[0m initting alien(2, 7) at {762.0 205.0 32.0 32.0}
+[0m[INFO]:[0m initting alien(2, 8) at {828.0 205.0 32.0 32.0}
+[0m[INFO]:[0m initting alien(2, 9) at {894.0 205.0 32.0 32.0}
+[0m[INFO]:[0m initting alien(2, 10) at {960.0 205.0 32.0 32.0}
+[0m[INFO]:[0m initting 3 outer_rectangle with: 300.0 205.0 692.0 32.0
+[0m[INFO]:[0m begin_y = 250
+[0m[INFO]:[0m initting alien(3, 0) at {284.0 250.0 64.0 28.0}
+[0m[INFO]:[0m initting alien(3, 1) at {350.0 250.0 64.0 28.0}
+[0m[INFO]:[0m initting alien(3, 2) at {416.0 250.0 64.0 28.0}
+[0m[INFO]:[0m initting alien(3, 3) at {482.0 250.0 64.0 28.0}
+[0m[INFO]:[0m initting alien(3, 4) at {548.0 250.0 64.0 28.0}
+[0m[INFO]:[0m initting alien(3, 5) at {614.0 250.0 64.0 28.0}
+[0m[INFO]:[0m initting alien(3, 6) at {680.0 250.0 64.0 28.0}
+[0m[INFO]:[0m initting alien(3, 7) at {746.0 250.0 64.0 28.0}
+[0m[INFO]:[0m initting alien(3, 8) at {812.0 250.0 64.0 28.0}
+[0m[INFO]:[0m initting alien(3, 9) at {878.0 250.0 64.0 28.0}
+[0m[INFO]:[0m initting alien(3, 10) at {944.0 250.0 64.0 28.0}
+[0m[INFO]:[0m initting 4 outer_rectangle with: 284.0 250.0 724.0 28.0
+[0m[INFO]:[0m begin_y = 295
+[0m[INFO]:[0m initting alien(4, 0) at {300.0 295.0 32.0 32.0}
+[0m[INFO]:[0m initting alien(4, 1) at {366.0 295.0 32.0 32.0}
+[0m[INFO]:[0m initting alien(4, 2) at {432.0 295.0 32.0 32.0}
+[0m[INFO]:[0m initting alien(4, 3) at {498.0 295.0 32.0 32.0}
+[0m[INFO]:[0m initting alien(4, 4) at {564.0 295.0 32.0 32.0}
+[0m[INFO]:[0m initting alien(4, 5) at {630.0 295.0 32.0 32.0}
+[0m[INFO]:[0m initting alien(4, 6) at {696.0 295.0 32.0 32.0}
+[0m[INFO]:[0m initting alien(4, 7) at {762.0 295.0 32.0 32.0}
+[0m[INFO]:[0m initting alien(4, 8) at {828.0 295.0 32.0 32.0}
+[0m[INFO]:[0m initting alien(4, 9) at {894.0 295.0 32.0 32.0}
+[0m[INFO]:[0m initting alien(4, 10) at {960.0 295.0 32.0 32.0}
+[0m[INFO]:[0m initting 5 outer_rectangle with: 300.0 295.0 692.0 32.0
+[0m[INFO]:[0m tick 	0.687327	0.687327
+[0m[INFO]:[0m tick 	1.302515	0.615188
+[0m[INFO]:[0m tick 	1.908590	0.606075
+[0m[INFO]:[0m tick 	2.536293	0.627703
+[0m[INFO]:[0m tick 	3.144536	0.608243
+[0m[INFO]:[0m tick 	3.764833	0.620298
+[0m[INFO]:[0m tick 	4.343656	0.578823
+[0m[INFO]:[0m tick 	4.943746	0.600090
+[0m[INFO]:[0m tick 	5.538228	0.594481
+[0m[INFO]:[0m tick 	6.138788	0.600560
+[0m[INFO]:[0m Killing bullet 0
+[0m[INFO]:[0m tick 	6.718243	0.579455
+[0m[INFO]:[0m tick 	7.317304	0.599061
+[0m[INFO]:[0m Killing bullet 1
+[0m[INFO]:[0m tick 	7.882365	0.565062
+[0m[INFO]:[0m tick 	8.468241	0.585876
+[0m[INFO]:[0m tick 	9.025477	0.557236
+[0m[INFO]:[0m tick 	9.603559	0.578082
+[0m[INFO]:[0m tick 	10.176250	0.572690
+[0m[INFO]:[0m tick 	10.746386	0.570137
+[0m[INFO]:[0m tick 	11.282458	0.536072
+[0m[INFO]:[0m tick 	11.853841	0.571383
+[0m[INFO]:[0m tick 	12.404823	0.550982
+[0m[INFO]:[0m Killing bullet 1
+[0m[INFO]:[0m tick 	12.962716	0.557894
+[0m[INFO]:[0m tick 	13.505450	0.542734
+[0m[INFO]:[0m tick 	14.078092	0.572642
+[0m[INFO]:[0m tick 	14.622082	0.543990
+[0m[INFO]:[0m tick 	15.186301	0.564219
+[0m[INFO]:[0m tick 	15.722301	0.535999
+[0m[INFO]:[0m tick 	16.295174	0.572874
+[0m[INFO]:[0m tick 	16.846048	0.550873
+[0m[INFO]:[0m Killing bullet 2
+[0m[INFO]:[0m tick 	17.403666	0.557619
+[0m[INFO]:[0m Killing bullet 1
+[0m[INFO]:[0m tick 	17.948212	0.544545
+[0m[INFO]:[0m tick 	18.515115	0.566903
+[0m[INFO]:[0m tick 	19.053045	0.537930
+[0m[INFO]:[0m tick 	19.603104	0.550059
+[0m[INFO]:[0m tick 	20.134104	0.531000
+[0m[INFO]:[0m tick 	20.692420	0.558315
+[0m[INFO]:[0m tick 	21.235561	0.543141
+[0m[INFO]:[0m tick 	21.788178	0.552618
+[0m[INFO]:[0m Killing bullet 2
+[0m[INFO]:[0m tick 	22.325768	0.537590
+[0m[INFO]:[0m tick 	22.884664	0.558896
+[0m[INFO]:[0m tick 	23.428488	0.543824
+[0m[INFO]:[0m tick 	23.978836	0.550348
+[0m[INFO]:[0m tick 	24.503137	0.524300
+[0m[INFO]:[0m tick 	25.067074	0.563937
+[0m[INFO]:[0m tick 	25.603235	0.536161
+[0m[INFO]:[0m tick 	26.153192	0.549957
+[0m[INFO]:[0m Killing bullet 3
+[0m[INFO]:[0m tick 	26.697507	0.544315
+[0m[INFO]:[0m tick 	27.248825	0.551318
+[0m[INFO]:[0m tick 	27.793371	0.544546
+[0m[INFO]:[0m tick 	28.346347	0.552976
+[0m[INFO]:[0m tick 	28.876720	0.530373
+[0m[INFO]:[0m tick 	29.435106	0.558387
+[0m[INFO]:[0m tick 	29.978585	0.543478
+[0m[INFO]:[0m tick 	30.524981	0.546397
+[0m[INFO]:[0m Killing bullet 4
+[0m[INFO]:[0m tick 	31.054937	0.529956
+[0m[INFO]:[0m tick 	31.613991	0.559054
+[0m[INFO]:[0m tick 	32.163925	0.549933
+[0m[INFO]:[0m tick 	32.708036	0.544111
+[0m[INFO]:[0m tick 	33.244998	0.536962
+[0m[INFO]:[0m tick 	33.802671	0.557673
+[0m[INFO]:[0m tick 	34.346044	0.543373
+[0m[INFO]:[0m tick 	34.895633	0.549588
+[0m[INFO]:[0m Killing bullet 5
+[0m[INFO]:[0m tick 	35.426100	0.530468
+[0m[INFO]:[0m tick 	35.984415	0.558315
+[0m[INFO]:[0m tick 	36.528064	0.543649
+[0m[INFO]:[0m tick 	37.078776	0.550712
+[0m[INFO]:[0m tick 	37.616486	0.537710
+[0m[INFO]:[0m tick 	38.174357	0.557871
+[0m[INFO]:[0m tick 	38.718442	0.544086
+[0m[INFO]:[0m tick 	39.267948	0.549505

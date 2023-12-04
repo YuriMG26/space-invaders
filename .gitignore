@@ -1,0 +1,10 @@
+temp_files/
+**/.vs/
+*.exe
+*.pdb
+*.exp
+*.lib
+*.ilk
+*.zip
+*.rdbg
+*.obj
