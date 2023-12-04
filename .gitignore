@@ -2,6 +2,7 @@ temp_files/
 **/.vs/
 *.exe
 *.pdb
+*.pdn
 *.exp
 *.lib
 *.ilk
