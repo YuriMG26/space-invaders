@@ -1,5 +1,7 @@
 #pragma once
 
+#define LOGGER 1
+
 #include "utils.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -24,12 +26,4 @@ void LogError(Logger *logger, const char *fmt, ...);
 void LogFatalError(Logger *logger, const char *fmt, ...);
 void LogWarning(Logger *logger, const char *fmt, ...);
 
-#define assert(expr)                                                           \
-  if ((expr))                                                                  \
-  {                                                                            \
-  }                                                                            \
-  else                                                                         \
-  {                                                                            \
-    LogError(NULL, "assertion failure: " LOG_RED "(%s)" LOG_RESET " at %s:%d", \
-             #expr, __FILE__, __LINE__);                                       \
-  }
+#include "Assert.h"

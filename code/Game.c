@@ -98,6 +98,8 @@ internal void LoadResources(GameApp *game)
   game->sound_assets.laser =
       LoadSoundSafe(game, "assets/nsstudios__laser3.wav");
   game->sound_assets.explosion = LoadSoundSafe(game, "assets/explosion.wav");
+  game->sound_assets.explosion_barrier =
+      LoadSoundSafe(game, "assets/explosion.wav");
   // game->sound_assets.background = LoadMusicSafe(game,
   // "assets/background2.wav"); game->sound_assets.background.looping = true;
   game->sound_assets.background = LoadMusicSafe(game, "assets/background2.wav");
@@ -140,18 +142,6 @@ internal void CheckPlayerWon(GameApp *game)
   }
 }
 
-internal void CheckGameOver(GameApp *game)
-{
-  if (game->game_over)
-  {
-    const char *text = "GAME OVER";
-    const u16 text_size = 35;
-    DrawText(text, Centralize(GetScreenWidth(), MeasureText(text, text_size)),
-             Centralize(GetScreenHeight(), text_size), text_size, WHITE);
-    return;
-  }
-}
-
 ALWAYS_INLINE void UpdateInputValues(KeyInput *input, bool left, bool right,
                                      bool shoot, bool gamepad_mode)
 {
@@ -166,6 +156,8 @@ internal void UpdatePlayerControl(GameApp *game)
   game->input.shoot = false;
   game->input.left = false;
   game->input.right = false;
+  if (game->player_dead)
+    return;
   if (IsGamepadAvailable(0))
   {
     bool left = IsGamepadButtonDown(0, GAMEPAD_BUTTON_LEFT_FACE_LEFT);
@@ -227,17 +219,17 @@ internal void SwapBullets(Bullet *bullet_a, Bullet *bullet_b)
 internal void KillPlayerBullet(GameApp *game, Bullet *bullet)
 {
   bullet->active = false;
-  SwapBullets(bullet, &game->bullets[game->player_active_bullets - 1]);
+  SwapBullets(bullet, &game->player_bullets[game->player_active_bullets - 1]);
   --game->player_active_bullets;
 }
 
 internal void CheckCollisionBulletBarrier(GameApp *game, u8 bullet_index,
                                           u8 barrier_index)
 {
-  Bullet *bullet = &game->bullets[bullet_index];
+  Bullet *bullet = &game->player_bullets[bullet_index];
   Barrier *barrier = &game->barriers[barrier_index];
 
-  for (u8 i = 0; i < 9; ++i)
+  for (u8 i = 0; i < BARRIER_RECTANGLES_AMMOUNT; ++i)
   {
     if (barrier->active_rectangles[i] == true &&
         CheckCollisionRecs(bullet->pos, barrier->rectangles[i]))
@@ -246,6 +238,7 @@ internal void CheckCollisionBulletBarrier(GameApp *game, u8 bullet_index,
       // TODO: damage
       barrier->active_rectangles[i] = false;
       KillPlayerBullet(game, bullet);
+      PlaySound(game->sound_assets.explosion_barrier);
     }
   }
 }
@@ -271,10 +264,10 @@ internal void SimulatePlayerBullets(GameApp *game)
   {
     b32 bullet_collided = false;
 
-    if (game->bullets[i].active)
+    if (game->player_bullets[i].active)
     {
       const f32 default_barrier_y = game->barriers[0].pos.y;
-      if (game->bullets[i].pos.y > default_barrier_y)
+      if (game->player_bullets[i].pos.y > default_barrier_y)
       {
         for (u8 j = 0; j < 4; ++j)
         {
@@ -285,17 +278,18 @@ internal void SimulatePlayerBullets(GameApp *game)
       {
         for (u8 j = 0; j < ALIENS_PER_COLUMN && !bullet_collided; ++j)
         {
-          if (CheckCollisionRecs(game->bullets[i].pos, game->alien_rows[j]))
+          if (CheckCollisionRecs(game->player_bullets[i].pos,
+                                 game->alien_rows[j]))
           {
             for (u8 k = 0; k < ALIENS_PER_ROW && !bullet_collided; ++k)
             {
               Alien *alien =
                   &game->aliens[_1d_index_to_2d(ALIENS_PER_ROW, j, k)];
               if (alien->alive == true &&
-                  CheckCollisionRecs(game->bullets[i].pos, alien->pos))
+                  CheckCollisionRecs(game->player_bullets[i].pos, alien->pos))
               {
                 bullet_collided = true;
-                KillPlayerBullet(game, &game->bullets[i]);
+                KillPlayerBullet(game, &game->player_bullets[i]);
                 alien->alive = false;
                 UpdateScore(game, alien->type);
                 game->aliens_alive_count--;
@@ -308,8 +302,8 @@ internal void SimulatePlayerBullets(GameApp *game)
         }
       }
 
-      CheckIfBulletISOutOfBounds(game, &game->bullets[i], i);
-      game->bullets[i].pos.y -= 300 * game->delta;
+      CheckIfBulletISOutOfBounds(game, &game->player_bullets[i], i);
+      game->player_bullets[i].pos.y -= 500 * game->delta;
     }
   }
 }
@@ -358,6 +352,42 @@ internal b32 GetLastAlienIndex(GameApp *game, u8 row_num, u8 *index)
   return alien_was_found;
 }
 
+// TODO: generic function for getting graphics off of the spritesheet?
+internal rect GetMiscGraphics(GameApp *game, u8 misc_type, u8 modifier)
+{
+  rect result;
+  switch (misc_type)
+  {
+  case ALIEN_BULLET:
+    assert(modifier < 4);
+    result = (rect){1 + (modifier * 5), 21, 3, 7};
+    break;
+  }
+  return result;
+}
+
+internal void AnimateBullets(GameApp *game)
+{
+  static f64 last_animation_tick;
+  // TODO: really use GetTime() or is it better converting the current frame
+  // time to ticks and calculate animation time on that? Hmmmm
+
+  // NOTE: the entire cycle should be done in 9 frames on 60hz, thus 18 frames
+  // on 120hz and so forth.
+  const f64 total_cycle_duration = 9.0 / 60.0;
+  const f64 bullet_animation_interval = total_cycle_duration / 3;
+  f64 time = GetTime();
+
+  if (last_animation_tick + bullet_animation_interval < time)
+  {
+    last_animation_tick = time;
+    game->alien_bullet_animation_state =
+        (game->alien_bullet_animation_state + 1 == 4)
+            ? 0
+            : game->alien_bullet_animation_state + 1;
+  }
+}
+
 // Hard-coded function for getting the alien rectangles off of the graphics
 // spritesheet.
 internal Rectangle GetEnemyRectangle(GameApp *game, u8 alien_type)
@@ -370,8 +400,8 @@ internal Rectangle GetEnemyRectangle(GameApp *game, u8 alien_type)
   case OCTOPUS:
   {
     result = (game->animation_state == ANIMATION_ZERO)
-                 ? (Rectangle){.x = 5, .y = 11, .width = 8, .height = 8}
-                 : (Rectangle){.x = 5, .y = 1, .width = 8, .height = 8};
+                 ? (Rectangle){.x = 39, .y = 11, .width = 12, .height = 8}
+                 : (Rectangle){.x = 39, .y = 1, .width = 12, .height = 8};
   }
   break;
   case CRAB:
@@ -423,12 +453,105 @@ inline Rectangle GetPlayerRectangle(void)
 {
   Rectangle result = {0};
 
-  result.x = 3;
+  result.x = 2;
   result.y = 49;
-  result.width = 13;
-  result.height = 9;
+  result.width = 15;
+  result.height = 8;
 
   return result;
+}
+
+internal Rectangle GetPlayerDeathAnimation(u8 frame)
+{
+  Rectangle result = {0};
+  switch (frame)
+  {
+  case 0:
+    result.x = 20;
+    result.y = 49;
+    result.width = 15;
+    result.height = 8;
+    break;
+  case 1:
+    result.x = 37;
+    result.y = 49;
+    result.width = 15;
+    result.height = 8;
+    break;
+  case 2:
+    result.x = 0;
+    result.y = 0;
+    result.width = 1;
+    result.height = 1;
+    break;
+  }
+  return result;
+}
+
+// TODO: animation system please
+internal void AnimatePlayerDeath(GameApp *game)
+{
+  static u8 animation_phase;
+  static f64 death_started_time;
+  static bool death_started;
+
+  static f64 static_phase_started_time;
+  static bool static_phase_started;
+
+  if (!death_started)
+  {
+    death_started = true;
+    death_started_time = GetTime();
+  }
+
+  f64 time_now = GetTime();
+  if (animation_phase == FLICKERING)
+  {
+    const f64 total_flickering_animation_time = 1.0; // in seconds
+    const f64 single_flicker_time = total_flickering_animation_time /
+                                    (total_flickering_animation_time * 10);
+    static f64 last_flicker_time = single_flicker_time;
+    static u8 flicker_frame = 3;
+
+    if (time_now > death_started_time + total_flickering_animation_time)
+    {
+      animation_phase = FINAL_STATIC;
+    }
+
+    // check if it is time to flicker
+    if (last_flicker_time + single_flicker_time < time_now)
+    {
+      // if so, flicker.
+      flicker_frame = (flicker_frame == 0) ? 1 : 0;
+      game->player.animation = GetPlayerDeathAnimation(flicker_frame);
+      last_flicker_time = time_now;
+    }
+  }
+  else if (animation_phase == FINAL_STATIC)
+  {
+    game->player.animation = GetPlayerDeathAnimation(2);
+    if (!static_phase_started)
+    {
+      static_phase_started = true;
+      static_phase_started_time = GetTime();
+    }
+    const f64 total_static_time = 2.0;
+    if (time_now > total_static_time + static_phase_started_time)
+    {
+      if (game->game_over == false)
+      {
+        game->player_dead = false;
+        game->aliens_are_moving = true;
+      }
+      animation_phase = 0;
+      death_started = false;
+      static_phase_started = false;
+      game->player.pos.x = Centralize(GetScreenWidth(), game->player.pos.width);
+      game->player_death_animation_just_ended = true;
+
+      ResumeMusicStream(game->sound_assets.background);
+    }
+  }
 }
 
 internal void CreateFullRectangle(GameApp *game)
@@ -457,7 +580,7 @@ internal void CreateFullRectangle(GameApp *game)
 
 inline void DrawPlayer(GameApp *game, Rectangle player_pos)
 {
-  DrawTexturePro(game->graphics, GetPlayerRectangle(), player_pos,
+  DrawTexturePro(game->graphics, game->player.animation, player_pos,
                  (Vector2){0, 0}, 0.0f, GREEN);
 }
 
@@ -493,7 +616,7 @@ internal void KillAlienBullet(GameApp *game, u32 bullet_index)
   SwapBullets(&game->alien_bullets[bullet_index],
               &game->alien_bullets[game->alien_active_bullets - 1]);
   --game->alien_active_bullets;
-  // LogInfo(game->logger, "Killing bullet %u", bullet_index);
+  LogInfo(NULL, "Killing bullet %u", bullet_index);
 }
 
 internal void AlienShoot(GameApp *game, u32 alien_index)
@@ -503,7 +626,9 @@ internal void AlienShoot(GameApp *game, u32 alien_index)
     return;
   }
 
-  Vector2 bullet_size = {3, 11};
+  f32 scale = 3.5;
+
+  Vector2 bullet_size = {3 * scale, 11 * scale};
   rect *alien_pos = &game->aliens[alien_index].pos;
   f32 x = Centralize(alien_pos->width, bullet_size.x) + alien_pos->x;
   f32 y = alien_pos->y + alien_pos->height + 2;
@@ -511,8 +636,7 @@ internal void AlienShoot(GameApp *game, u32 alien_index)
   rect rectangle = (Rectangle){x, y, bullet_size.x, bullet_size.y};
   game->alien_bullets[game->alien_active_bullets].pos = rectangle;
 
-  assert(game->alien_bullets[game->alien_active_bullets].pos.width == 3);
-  assert(game->alien_bullets[game->alien_active_bullets].pos.height == 11);
+  // DEBUG_ASSERT(y < 1200);
 
   LogInfo(NULL, "alien %u shooting bullet %u", alien_index,
           game->alien_active_bullets);
@@ -586,21 +710,21 @@ internal void UpdateAlienPositions(GameApp *game)
 internal void InitBarriersHitboxes(GameApp *game, Barrier *barrier)
 {
   assert(barrier != NULL);
-  const f32 box_width = barrier->pos.width / 3;
-  const f32 box_height = barrier->pos.height / 3;
+  const f32 box_width = barrier->pos.width / BARRIERS_COLS;
+  const f32 box_height = barrier->pos.height / BARRIERS_ROWS;
 
   f32 current_x = barrier->pos.x;
   f32 current_y = barrier->pos.y;
 
-  for (u8 i = 0; i < 9; ++i)
+  for (u8 i = 0; i < BARRIER_RECTANGLES_AMMOUNT; ++i)
   {
     barrier->rectangles[i].width = box_width;
     barrier->rectangles[i].height = box_height;
     barrier->active_rectangles[i] = true;
   }
-
+  u8 i = 0;
   // TODO: compress?
-  for (u8 i = 0; i < 3; ++i)
+  for (i = 0; i < (BARRIER_RECTANGLES_AMMOUNT / BARRIERS_ROWS); ++i)
   {
     barrier->rectangles[i].x = current_x;
     barrier->rectangles[i].y = current_y;
@@ -608,7 +732,7 @@ internal void InitBarriersHitboxes(GameApp *game, Barrier *barrier)
   }
   current_x = barrier->pos.x;
   current_y += box_height;
-  for (u8 i = 3; i < 6; ++i)
+  for (; i < (BARRIER_RECTANGLES_AMMOUNT / BARRIERS_ROWS) * 2; ++i)
   {
     barrier->rectangles[i].x = current_x;
     barrier->rectangles[i].y = current_y;
@@ -616,7 +740,7 @@ internal void InitBarriersHitboxes(GameApp *game, Barrier *barrier)
   }
   current_x = barrier->pos.x;
   current_y += box_height;
-  for (u8 i = 6; i < 9; ++i)
+  for (; i < (BARRIER_RECTANGLES_AMMOUNT / BARRIERS_ROWS) * 3; ++i)
   {
     barrier->rectangles[i].x = current_x;
     barrier->rectangles[i].y = current_y;
@@ -704,11 +828,17 @@ internal void SetAliensPositions(GameApp *game)
   current_alien_type = 0;
   for (u8 i = 0; i < ALIENS_PER_COLUMN; ++i)
   {
-    ++current_alien_type;
+    if (i == 0)
+      current_alien_type = SQUID;
+    else if (i >= 1 && i < 3)
+      current_alien_type = CRAB;
+    else if (i >= 3 && i < ALIENS_PER_COLUMN)
+      current_alien_type = OCTOPUS;
+    else
+      current_alien_type = UFO;
 
     begin_x = begin_x_position;
     begin_y += 45;
-    // LogInfo(game->logger, "begin_y = %u", begin_y);
 
     u8 start_index = 0, end_index = 255;
 
@@ -728,13 +858,6 @@ internal void SetAliensPositions(GameApp *game)
                               2;
         current_alien->pos = (Rectangle){x, begin_y, aux.width * scaling_factor,
                                          aux.height * scaling_factor};
-        // LogInfo(game->logger, "initting alien(%u, %u) at {%.1f %.1f %.1f
-        // %.1f}",
-        // i, j, current_alien->pos.x, current_alien->pos.y,
-        // current_alien->pos.width, current_alien->pos.height);
-
-        // TODO: generate min-max rectangles for when an alien is
-        // killed.
         begin_x += alien_jump_width;
 
         current_alien->alive = true;
@@ -751,10 +874,7 @@ internal void SetAliensPositions(GameApp *game)
 
     Rectangle outer =
         GenerateRowRectangle(alien_row[start_index], alien_row[end_index]);
-    // LogInfo(game->logger,
-    // "initting %u outer_rectangle with: %.1f %.1f %.1f %.1f",
-    // current_alien_type, outer.x, outer.y, outer.width, outer.height);
-    game->alien_rows[current_alien_type - 1] = outer;
+    game->alien_rows[i] = outer;
   }
   CreateFullRectangle(game);
 
@@ -790,6 +910,7 @@ GameApp *GameBegin(int argc, char *argv[])
 
   game->num_of_lifes = 3;
   game->moving_to = RIGHT;
+  game->should_animate_player_death = true;
   game->moved_down_last_tick = true;
   game->aliens_are_moving = true;
   game->paused = false;
@@ -817,6 +938,8 @@ GameApp *GameBegin(int argc, char *argv[])
 
   SetMasterVolume(0.8f);
   SetSoundVolume(game->sound_assets.explosion, 0.15f);
+  SetSoundPitch(game->sound_assets.explosion_barrier, 1.4f);
+  SetSoundVolume(game->sound_assets.explosion_barrier, 0.09f);
   SetSoundVolume(game->sound_assets.laser, 0.4f);
 
   u16 player_width = 60;
@@ -896,16 +1019,14 @@ internal void CheckAlienBulletsCollison(GameApp *game)
   {
     if (game->alien_bullets[i].active)
     {
-      // if (game->alien_bullets[i].pos.y < 30 ||
-      //     game->alien_bullets[i].active > 1)
-      //   __debugbreak();
       // Check collision with player
       if (CheckCollisionRecs(game->alien_bullets[i].pos, game->player.hitbox))
       {
         KillAlienBullet(game, i);
         game->num_of_lifes--;
         PlaySound(game->sound_assets.explosion);
-        CheckPlayerLifes(game);
+        game->player_dead = true;
+        game->player_dead_time = GetTime();
         continue;
       }
       for (u8 j = 0; j < 4; ++j)
@@ -914,17 +1035,17 @@ internal void CheckAlienBulletsCollison(GameApp *game)
                                game->barriers[j].pos))
         {
           Barrier *barrier = &game->barriers[j];
-          // LogInfo(NULL, "bullet %u colliding with barrier %u", i, j);
           for (u8 k = 0; k < 9; ++k)
           {
-            if (game->barriers[j].active_rectangles[k] == true &&
+            if (game->alien_bullets[i].active &&
+                game->barriers[j].active_rectangles[k] == true &&
                 CheckCollisionRecs(game->alien_bullets[i].pos,
                                    barrier->rectangles[k]))
             {
-              // LogInfo(NULL, "\tbullet %u colliding with hitbox %u", i, k);
-              // TODO: damage
+              LogInfo(NULL, "\tbullet %u colliding with hitbox %u", i, k);
               barrier->active_rectangles[k] = false;
               KillAlienBullet(game, i);
+              PlaySound(game->sound_assets.explosion_barrier);
             }
           }
         }
@@ -932,19 +1053,48 @@ internal void CheckAlienBulletsCollison(GameApp *game)
       // Check collision with bottom of the screen
       if (game->alien_bullets[i].pos.y > GetScreenHeight())
         KillAlienBullet(game, i);
-      game->alien_bullets[i].pos.y += 200 * game->delta;
+      const f32 alien_bullet_speed = 500;
+      game->alien_bullets[i].pos.y += alien_bullet_speed * game->delta;
     }
   }
 }
 
 void GameSimulate(GameApp *game)
 {
+  if (game->player_death_animation_just_ended == true)
+    game->player_death_animation_just_ended = false;
   game->delta = GetFrameTime();
+  CheckPlayerLifes(game);
 
   game->time_coef = (double)(56 - game->aliens_alive_count) / (double)ALIEN_NUM;
   UpdateMusicStream(game->sound_assets.background);
 
-  CheckGameOver(game);
+  if (game->player_dead == true)
+  {
+    game->aliens_are_moving = false;
+    if (IsMusicStreamPlaying(game->sound_assets.background))
+    {
+      PauseMusicStream(game->sound_assets.background);
+    }
+    if (game->should_animate_player_death)
+      AnimatePlayerDeath(game);
+  }
+  else
+  {
+    game->player.animation = GetPlayerRectangle();
+  }
+
+  if (game->game_over)
+  {
+    if (game->player_death_animation_just_ended)
+      game->should_animate_player_death = false;
+    const char *text = "GAME OVER";
+    const u16 text_size = 35;
+    DrawText(text, Centralize(GetScreenWidth(), MeasureText(text, text_size)),
+             Centralize(GetScreenHeight(), text_size), text_size, WHITE);
+    return;
+  }
+
   CheckPlayerWon(game);
   SimulatePlayer(game);
   CheckDebugKeys(game);
@@ -969,7 +1119,7 @@ void GameSimulate(GameApp *game)
       break;
   }
 
-  if (CheckMusicTick(game) && game->aliens_are_moving)
+  if (!game->paused && CheckMusicTick(game) && game->aliens_are_moving)
   {
     game->animation_state = (game->animation_state == ANIMATION_ZERO)
                                 ? ANIMATION_ONE
@@ -987,32 +1137,18 @@ void GameSimulate(GameApp *game)
 
 void GameDraw(GameApp *game)
 {
-  u8 current_alien_type = 1;
-  u8 counter = 1;
-  for (u8 i = 0; i < ALIEN_NUM; ++i, ++counter)
+  for (u8 i = 0; i < ALIEN_NUM; ++i)
   {
-    if (counter == ALIENS_PER_ROW + 1)
-    {
-      ++current_alien_type;
-      counter = 1;
-    }
     if (game->aliens[i].alive == true)
     {
       if (game->draw_hitboxes)
-        DrawRectangleRec(game->aliens[i].pos, RED);
+        DrawRectangleLinesEx(game->aliens[i].pos, 1.0f, RED);
       if (game->debug_draw_aliens)
       {
         Color c;
-        if (i % 3 == 0)
-        {
-          c = WHITE;
-        }
-        else
-        {
-          c = RED;
-        }
+        c = WHITE;
 
-        DrawAlien(game, current_alien_type, game->aliens[i].pos, c);
+        DrawAlien(game, game->aliens[i].type, game->aliens[i].pos, c);
       }
     }
   }
@@ -1020,14 +1156,10 @@ void GameDraw(GameApp *game)
   for (u8 i = 0; i < 4; ++i)
   {
     Color c = GREEN;
-    if (i == 0)
-      c = RED;
-    if (i == 3)
-      c = YELLOW;
     DrawTexturePro(game->graphics, GetBarrierRectangle(), game->barriers[i].pos,
                    (Vector2){0, 0}, 0.0, c);
 
-    for (u8 j = 0; j < 9; ++j)
+    for (u8 j = 0; j < BARRIER_RECTANGLES_AMMOUNT; ++j)
     {
       if (game->barriers[i].active_rectangles[j])
       {
@@ -1035,9 +1167,7 @@ void GameDraw(GameApp *game)
           DrawRectangleLinesEx(game->barriers[i].rectangles[j], 1.0f, RED);
       }
       else
-      {
         DrawRectangleRec(game->barriers[i].rectangles[j], BLACK);
-      }
     }
   }
 
@@ -1047,17 +1177,20 @@ void GameDraw(GameApp *game)
 
   for (u16 i = 0; i < game->player_active_bullets; ++i)
   {
-    if (game->bullets[i].active)
-    {
-      DrawRectangleRec(game->bullets[i].pos, WHITE);
-    }
+    if (game->player_bullets[i].active)
+      DrawRectangleRec(game->player_bullets[i].pos, WHITE);
   }
 
   for (u16 i = 0; i < game->alien_active_bullets; ++i)
   {
     if (game->alien_bullets[i].active)
     {
-      DrawRectangleRec(game->alien_bullets[i].pos, RED);
+      // TODO: generic function for animation
+      AnimateBullets(game);
+      DrawTexturePro(game->graphics,
+                     GetMiscGraphics(game, ALIEN_BULLET,
+                                     game->alien_bullet_animation_state),
+                     game->alien_bullets[i].pos, (Vector2){0, 0}, 0.0, WHITE);
     }
   }
 
@@ -1143,14 +1276,6 @@ void GameDrawDebugInfo(GameApp *game)
              0, DARKGRAY);
   begin_y += 25;
 
-  // temp_buffer = "distance = {%.2f %.2f}";
-  // sprintf_s(buffer, 256, temp_buffer, game->debug_full_rectangle.x - 0,
-  //           GetScreenWidth() - (game->debug_full_rectangle.x +
-  //                                        game->debug_full_rectangle.width));
-  // DrawTextEx(game->debug_font, buffer,
-  //                     (Vector2){(float)begin_x, (float)begin_y},
-  //                     game->debug_font_size, 0, DARKGRAY);
-  // begin_y += 25;
   temp_buffer = "time_coef: %lf";
   sprintf_s(buffer, 256, temp_buffer, game->time_coef);
   DrawTextEx(game->debug_font, buffer,
@@ -1181,18 +1306,26 @@ void GameDrawDebugInfo(GameApp *game)
              0, DARKGRAY);
   begin_y += 25;
 
-  for (u16 i = 0; i < MAX_BULLETS; ++i)
+  for (u16 i = 0; i < MAX_PLAYER_BULLETS; ++i)
   {
-    if (game->bullets[i].active)
+    if (game->player_bullets[i].active)
     {
-      sprintf_s(buffer, 256, "%u = {%f, %f}", i, game->bullets[i].pos.x,
-                game->bullets[i].pos.y);
+      sprintf_s(buffer, 256, "%u = {%f, %f}", i, game->player_bullets[i].pos.x,
+                game->player_bullets[i].pos.y);
       DrawTextEx(game->debug_font, buffer,
                  (Vector2){(float)begin_x, (float)begin_y},
                  game->debug_font_size, 0, DARKGRAY);
       begin_y += 25;
     }
   }
+
+  bool music_playing = IsMusicStreamPlaying(game->sound_assets.background);
+  sprintf_s(buffer, 256, "%s",
+            (music_playing) ? "music is playing" : "music is NOT playing");
+  DrawTextEx(game->debug_font, buffer,
+             (Vector2){(float)begin_x, (float)begin_y}, game->debug_font_size,
+             0, DARKGRAY);
+  begin_y += 25;
 
   Vector2 mouse_pos = GetMousePosition();
   temp_buffer = "mouse_pos = %.1f %.1f";
@@ -1211,30 +1344,26 @@ void GameDrawDebugInfo(GameApp *game)
   begin_y += 25;
 
   for (u16 i = 0; i < ALIENS_PER_COLUMN; ++i)
-  {
     DrawRectangleLinesEx(game->alien_rows[i], 1, GREEN);
-  }
 
   DrawRectangleLinesEx(game->debug_full_rectangle, 1.0, RED);
 }
 
 void Shoot(GameApp *game)
 {
-  if (game->player_active_bullets == MAX_BULLETS)
+  if (game->player_active_bullets == MAX_PLAYER_BULLETS)
     return;
 
-  f32 width = 5;
-  f32 height = 12;
+  f32 width = 4;
+  f32 height = 14;
   f32 x = Centralize(game->player.pos.width, width) + game->player.pos.x;
   f32 y = game->player.pos.y - height;
 
-  game->bullets[game->player_active_bullets].active = true;
-  game->bullets[game->player_active_bullets].pos =
+  game->player_bullets[game->player_active_bullets].active = true;
+  game->player_bullets[game->player_active_bullets].pos =
       (Rectangle){x, y, width, height};
 
   game->player_active_bullets++;
-  // //LogInfo(game->logger, "shooting bullet %u",
-  // game->player_active_bullets);
 
   PlaySound(game->sound_assets.laser);
 }

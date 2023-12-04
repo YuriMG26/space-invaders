@@ -5,8 +5,16 @@
 #include <raylib.h>
 #include <raymath.h>
 
+#include "Animator.h"
+
 typedef Rectangle rect;
 typedef Texture tex;
+
+enum PlayerDeathPhase
+{
+  FLICKERING = 0,
+  FINAL_STATIC = 1,
+};
 
 enum MovingTo
 {
@@ -26,10 +34,16 @@ enum AlienType
   BLINKING_UFO
 };
 
+enum MiscType
+{
+  ALIEN_BULLET,
+};
+
 typedef struct
 {
   rect pos;
   rect hitbox;
+  rect animation;
 } Player;
 
 typedef struct
@@ -52,34 +66,24 @@ typedef struct
 #define ALIENS_PER_COLUMN 5
 #define ALIEN_NUM (ALIENS_PER_ROW * ALIENS_PER_COLUMN)
 
-#define MAX_BULLETS 2
+#define MAX_PLAYER_BULLETS 1
 
+#define BARRIERS_ROWS 3
+#define BARRIERS_COLS 6
+#define BARRIER_RECTANGLES_AMMOUNT BARRIERS_ROWS *BARRIERS_COLS
 typedef struct
 {
-  union
-  {
-    struct
-    {
-      rect top_left;
-      rect top_center;
-      rect top_right;
-      rect center_left;
-      rect center_center;
-      rect center_right;
-      rect bottom_left;
-      rect bottom_center;
-      rect bottom_right;
-    };
-    rect rectangles[8];
-  };
   rect pos;
-  bool active_rectangles[9];
+  rect rectangles[BARRIER_RECTANGLES_AMMOUNT];
+  bool active_rectangles[BARRIER_RECTANGLES_AMMOUNT];
+  // u8 rectangles_life[BARRIER_RECTANGLES_AMMOUNT];
 } Barrier;
 
 typedef struct
 {
   Sound laser;
   Sound explosion;
+  Sound explosion_barrier;
   Music background;
 } GameSound;
 
@@ -116,7 +120,11 @@ typedef struct
 
   u8 animation_state;
 
+  u8 alien_bullet_animation_state;
+
   b32 game_over;
+  b32 player_death_animation_just_ended;
+  b32 should_animate_player_death;
   u32 score;
   u32 tick_counter;
 
@@ -131,8 +139,8 @@ typedef struct
   // NOTE: this is a fix for when rows were not properly being deleted.
   b32 active_rows[ALIENS_PER_COLUMN];
 
-  Bullet bullets[MAX_BULLETS]; // Array of bullets
-  u16 player_active_bullets;   // Number of active bullets
+  Bullet player_bullets[MAX_PLAYER_BULLETS]; // Array of bullets
+  u16 player_active_bullets;                 // Number of active bullets
 
 #define MAX_ALIEN_BULLETS 3
   Bullet alien_bullets[MAX_ALIEN_BULLETS];
@@ -142,6 +150,9 @@ typedef struct
   u8 num_of_lifes;
 
   b32 game_code_was_reloaded;
+
+  b32 player_dead;
+  f64 player_dead_time;
 
   b32 paused;
   b32 should_reset_aliens;
