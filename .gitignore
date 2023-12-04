@@ -1,5 +1,7 @@
 temp_files/
 **/.vs/
+*.res
+*.rc
 *.exe
 *.pdb
 *.pdn
@@ -7,5 +9,6 @@ temp_files/
 *.lib
 *.ilk
 *.zip
+*.sln
 *.rdbg
 *.obj

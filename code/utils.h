@@ -6,7 +6,11 @@
 
 #define _1d_index_to_2d(width, row, col) (width * row + col)
 
+#ifndef _MSC_VER
 #define ALWAYS_INLINE __attribute__((always_inline))
+#else
+#define ALWAYS_INLINE __forceinline
+#endif
 
 #include "MyTypes.h"
 

@@ -1,3 +1,9 @@
+/*
+ * TODO:
+ * [] UFO
+ * [] Correct SwapBullets bug
+ */
+
 #define GAME_CODE
 #include "Game.h"
 #include "utils.h"
@@ -100,8 +106,6 @@ internal void LoadResources(GameApp *game)
   game->sound_assets.explosion = LoadSoundSafe(game, "assets/explosion.wav");
   game->sound_assets.explosion_barrier =
       LoadSoundSafe(game, "assets/explosion.wav");
-  // game->sound_assets.background = LoadMusicSafe(game,
-  // "assets/background2.wav"); game->sound_assets.background.looping = true;
   game->sound_assets.background = LoadMusicSafe(game, "assets/background2.wav");
   game->sound_assets.background.looping = true;
   SetSoundVolume(game->sound_assets.explosion, 0.5f);
@@ -210,6 +214,7 @@ internal bool CheckMusicTick(GameApp *game)
 
 internal void SwapBullets(Bullet *bullet_a, Bullet *bullet_b)
 {
+  // TODO/NOTE: there is a bug when the player is shooting the barriers.
   Bullet temp;
   temp = *bullet_a;
   *bullet_a = *bullet_b;
@@ -234,7 +239,6 @@ internal void CheckCollisionBulletBarrier(GameApp *game, u8 bullet_index,
     if (barrier->active_rectangles[i] == true &&
         CheckCollisionRecs(bullet->pos, barrier->rectangles[i]))
     {
-      // LogInfo(NULL, "\tbullet %u colliding with hitbox %u", i, k);
       // TODO: damage
       barrier->active_rectangles[i] = false;
       KillPlayerBullet(game, bullet);
@@ -245,6 +249,7 @@ internal void CheckCollisionBulletBarrier(GameApp *game, u8 bullet_index,
 
 internal void CheckDebugKeys(GameApp *game)
 {
+#if RELEASE_BUILD == 0
   if (IsKeyPressed(KEY_F1))
     game->debug_mode = !game->debug_mode;
 
@@ -256,6 +261,7 @@ internal void CheckDebugKeys(GameApp *game)
 
   if (IsKeyPressed(KEY_F4))
     game->aliens_are_moving = !game->aliens_are_moving;
+#endif
 }
 
 internal void SimulatePlayerBullets(GameApp *game)
@@ -423,16 +429,6 @@ internal Rectangle GetEnemyRectangle(GameApp *game, u8 alien_type)
     result = (Rectangle){.x = 1, .y = 40, .width = 16, .height = 7};
   }
   break;
-    // case SHAPESHIFTER:
-    // {
-    //   // TODO
-    // }
-    // break;
-    // case BLINKING_UFO:
-    // {
-    //   // TODO
-    // }
-    // break;
   }
   return result;
 }
@@ -510,7 +506,7 @@ internal void AnimatePlayerDeath(GameApp *game)
     const f64 total_flickering_animation_time = 1.0; // in seconds
     const f64 single_flicker_time = total_flickering_animation_time /
                                     (total_flickering_animation_time * 10);
-    static f64 last_flicker_time = single_flicker_time;
+    static f64 last_flicker_time = 1.0 / (1.0 * 10);
     static u8 flicker_frame = 3;
 
     if (time_now > death_started_time + total_flickering_animation_time)
@@ -644,9 +640,6 @@ internal void AlienShoot(GameApp *game, u32 alien_index)
   game->alien_active_bullets++;
 
   PlaySound(game->sound_assets.laser);
-  // //LogInfo(game->logger, "alien %u shooting {%f %f}", alien_index,
-  // rectangle.x,
-  //         rectangle.y);
 }
 
 internal void UpdateAlienPositions(GameApp *game)
@@ -918,14 +911,15 @@ GameApp *GameBegin(int argc, char *argv[])
   SetConfigFlags(FLAG_MSAA_4X_HINT);
   InitWindow((int)game->width, (int)game->height, game->title);
 
+#if RELEASE_BUILD == 0
   game->debug_mode = true;
   game->draw_hitboxes = false;
+#endif
   game->debug_draw_aliens = true;
   game->debug_rect = (Rectangle){10, 10, 350, 550};
   game->debug_font_size = 24;
   game->debug_font =
       LoadFontSafe(game, "assets/inconsolata_bold.ttf", game->debug_font_size);
-  // game->logger = // LoggerBegin("log.txt", true);
 
   i32 refresh_rate = GetMonitorRefreshRate(GetCurrentMonitor());
   if (refresh_rate == 0)
@@ -1035,7 +1029,7 @@ internal void CheckAlienBulletsCollison(GameApp *game)
                                game->barriers[j].pos))
         {
           Barrier *barrier = &game->barriers[j];
-          for (u8 k = 0; k < 9; ++k)
+          for (u8 k = 0; k < BARRIER_RECTANGLES_AMMOUNT; ++k)
           {
             if (game->alien_bullets[i].active &&
                 game->barriers[j].active_rectangles[k] == true &&
@@ -1126,7 +1120,7 @@ void GameSimulate(GameApp *game)
                                 : ANIMATION_ZERO;
     UpdateAlienPositions(game);
     SetMusicPitch(game->sound_assets.background, 1.0 + game->time_coef);
-    if (++game->alien_should_shoot_counter == 4)
+    if (++game->alien_should_shoot_counter == 4 && game->aliens_alive_count > 0)
     {
       AlienShoot(game, random_alien);
       game->alien_should_shoot_counter = 0;
@@ -1349,7 +1343,7 @@ void GameDrawDebugInfo(GameApp *game)
   DrawRectangleLinesEx(game->debug_full_rectangle, 1.0, RED);
 }
 
-void Shoot(GameApp *game)
+internal void Shoot(GameApp *game)
 {
   if (game->player_active_bullets == MAX_PLAYER_BULLETS)
     return;

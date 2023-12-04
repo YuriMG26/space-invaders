@@ -1,6 +1,9 @@
 #include "Game.h"
 #include <raylib.h>
 
+#if RELEASE_BUILD == 1
+#pragma comment(linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup")
+#endif
 int main(int argc, char *argv[])
 {
   GameApp *game = GameBegin(argc, argv);

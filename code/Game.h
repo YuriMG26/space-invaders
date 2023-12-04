@@ -39,14 +39,14 @@ enum MiscType
   ALIEN_BULLET,
 };
 
-typedef struct
+typedef struct Player
 {
   rect pos;
   rect hitbox;
   rect animation;
 } Player;
 
-typedef struct
+typedef struct Alien
 {
   u16 id;
   rect pos;
@@ -55,7 +55,7 @@ typedef struct
   b32 alive;
 } Alien;
 
-typedef struct
+typedef struct Bullet
 {
   u16 id;
   b32 active;
@@ -71,7 +71,7 @@ typedef struct
 #define BARRIERS_ROWS 3
 #define BARRIERS_COLS 6
 #define BARRIER_RECTANGLES_AMMOUNT BARRIERS_ROWS *BARRIERS_COLS
-typedef struct
+typedef struct Barrier
 {
   rect pos;
   rect rectangles[BARRIER_RECTANGLES_AMMOUNT];
@@ -79,7 +79,7 @@ typedef struct
   // u8 rectangles_life[BARRIER_RECTANGLES_AMMOUNT];
 } Barrier;
 
-typedef struct
+typedef struct GameSound
 {
   Sound laser;
   Sound explosion;
@@ -100,7 +100,7 @@ enum AnimationState
   ANIMATION_ONE
 };
 
-typedef struct
+typedef struct GameApp
 {
   Logger *logger;
   GameSound sound_assets;
@@ -166,38 +166,13 @@ typedef struct
   rect debug_full_rectangle;
 } GameApp;
 
-#if 0
-#ifdef GAME_DLL
-#define DLL_CODE __declspec(dllexport)
-#else
-#define DLL_CODE __declspec(dllimport)
-#endif
-#endif
-#define DLL_CODE
-
-#define GAME_BEGIN(x) GameApp *x(int argc, char *argv[])
-typedef GAME_BEGIN(game_begin_t);
-DLL_CODE GAME_BEGIN(GameBegin);
-
-#define GAME_END(x) void x(GameApp *game)
-typedef GAME_END(game_end_t);
-DLL_CODE GAME_END(GameEnd);
-
-#define GAME_SIMULATE(x) void x(GameApp *game)
-typedef GAME_SIMULATE(game_simulate_t);
-DLL_CODE GAME_SIMULATE(GameSimulate);
-
-#define GAME_DRAW(x) void x(GameApp *game)
-typedef GAME_DRAW(game_draw_t);
-DLL_CODE GAME_DRAW(GameDraw);
-
-#define GAME_DRAW_DEBUG_INFO(x) void x(GameApp *game)
-typedef GAME_DRAW_DEBUG_INFO(game_draw_debug_info_t);
-DLL_CODE GAME_DRAW_DEBUG_INFO(GameDrawDebugInfo);
-
-void Shoot(GameApp *game);
-
+GameApp *GameBegin(int argc, char *argv[]);
+void GameDraw(GameApp *game);
+void GameSimulate(GameApp *game);
+void GameEnd(GameApp *game);
 #ifdef GAME_CODE
+internal void Shoot(GameApp *game);
 internal void UpdateRowRectangle(GameApp *game, u8 row_num, rect *alien_row);
 internal void CheckIfBulletISOutOfBounds(GameApp *game, Bullet *bullet, u16 i);
+internal void GameDrawDebugInfo(GameApp *game);
 #endif
